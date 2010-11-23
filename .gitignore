@@ -3,3 +3,6 @@ include/*
 lib/*
 src/*
 *.pyc
+build/
+dist/
+armstrong.base.egg-info/
