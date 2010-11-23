@@ -1,0 +1,5 @@
+Django
+fudge
+-e git://github.com/tswicegood/fabric#egg=fabric
+-e git://github.com/domain51/d51.django.virtualenv.base#egg=d51.django.virtualenv.base
+-e git://github.com/domain51/d51.django.virtualenv.test_runner#egg=d51.django.virtualenv.test_runner
