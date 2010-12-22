@@ -10,7 +10,7 @@ from ..context_processors import media_url
 class TestOfMediaUrlContextProcessor(TestCase):
     def generate_fake_request(self, is_secure=False):
         request = fudge.Fake(HttpRequest)
-        request.has_attr(is_secure=is_secure)
+        request.provides('is_secure').returns(is_secure)
         return request
 
     def generate_fake_settings_and_result(self, is_secure=False):
