@@ -14,22 +14,28 @@ class TestOfMediaUrlContextProcessor(TestCase):
         return request
 
     def generate_fake_settings_and_result(self, is_secure=False):
-        expected_media_url = 'http://example.com/media/%d' % random.randint(100, 200)
-        expected_result = {'MEDIA_URL': expected_media_url}
+        media_url_pattern = '%%sexample.com/media/%d/' % random.randint(100, 200)
         fake_settings = fudge.Fake()
-        if is_secure:
-            fake_settings.has_attr(SECURE_MEDIA_URL=expected_media_url)
-        else:
-            fake_settings.has_attr(MEDIA_URL=expected_media_url)
+        fake_settings.has_attr(**{
+            'MEDIA_URL': media_url_pattern % 'http://',
+            'SECURE_MEDIA_URL': media_url_pattern % 'https://secure.',
+        })
+        expected_result = {
+            'MEDIA_URL': getattr(fake_settings,
+                'SECURE_MEDIA_URL' if is_secure else 'MEDIA_URL'),
+        }
         return fake_settings, expected_result
 
     def generate_fake_settings_and_result_with_uploaded(self, is_secure=False):
         fake_settings, expected_result = self.generate_fake_settings_and_result(is_secure=is_secure)
-        expected_uploaded_media_url = expected_result['MEDIA_URL'] + "/uploads/"
-        fake_settings.has_attr(UPLOADED_MEDIA_URL=expected_uploaded_media_url)
-        if is_secure:
-            fake_settings.has_attr(SECURE_UPLOADED_MEDIA_URL=expected_uploaded_media_url)
-        expected_result['UPLOADED_MEDIA_URL'] = expected_uploaded_media_url
+        uploads_pattern = '%suploads/'
+        fake_settings.has_attr(**{
+            'UPLOADED_MEDIA_URL': uploads_pattern % fake_settings.MEDIA_URL,
+            'SECURE_UPLOADED_MEDIA_URL': uploads_pattern %
+                fake_settings.SECURE_MEDIA_URL,
+        })
+        expected_result['UPLOADED_MEDIA_URL'] = getattr(fake_settings,
+            'SECURE_UPLOADED_MEDIA_URL' if is_secure else 'UPLOADED_MEDIA_URL')
         return fake_settings, expected_result
 
     def test_returns_media_url_from_settings(self):
