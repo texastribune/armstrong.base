@@ -1,6 +1,7 @@
 import re
 import urlparse
 
+from django.conf import settings
 from django import template
 register = template.Library()
 
@@ -13,6 +14,9 @@ class HighlightedSearchTermNode(template.Node):
         text = self.text.resolve(context)
 
         if not "request" in context:
+            if settings.DEBUG:
+                from django.core.exceptions import ImproperlyConfigured
+                raise ImproperlyConfigured
             return text
         request = context['request']
 

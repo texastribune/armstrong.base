@@ -1,6 +1,8 @@
 import fudge
 import urllib
 
+from django.core.exceptions import ImproperlyConfigured
+
 from .._utils import TestCase
 from ...templatetags import text_helpers
 
@@ -27,6 +29,16 @@ class HelloWorld(TestCase):
         node = text_helpers.HighlightedSearchTermNode("text")
         result = node.render({"text": text})
         self.assertEqual(text, result)
+
+    def test_raises_exception_when_debug_is_on(self):
+        settings = fudge.Fake()
+        settings.has_attr(DEBUG=True)
+
+        text = "This is some text"
+        node = text_helpers.HighlightedSearchTermNode("text")
+
+        with fudge.patched_context(text_helpers, 'settings', settings):
+            self.assertRaises(ImproperlyConfigured, node.render, {"text": text})
 
     def test_replaces_words_with_highlighted_word(self):
         text = "This is some text"
