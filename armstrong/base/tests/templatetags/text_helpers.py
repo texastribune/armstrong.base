@@ -4,15 +4,15 @@ from .._utils import TestCase
 from ...templatetags import text_helpers
 
 
-def generate_random_request():
+def generate_random_request(match="some"):
     request = fudge.Fake()
-    request.has_attr(META={"HTTP_REFERER": "http://localhost/?q=some"})
+    request.has_attr(META={"HTTP_REFERER": "http://localhost/?q=%s" % match})
     fudge.clear_calls()
     return request
 
 
-def generate_random_request_and_context(text):
-    request = generate_random_request()
+def generate_random_request_and_context(text, match="some"):
+    request = generate_random_request(match=match)
     context = {
         "request": request,
         "text": text,
@@ -38,4 +38,14 @@ class HelloWorld(TestCase):
         node = text_helpers.HighlightedSearchTermNode("text")
         result = node.render(context)
         expected = 'This is <span class="search_term">SOME</span> text'
+        self.assertEqual(expected, result)
+
+    def test_can_handle_mixed_case(self):
+        text = "This is Some TeXT"
+        request, context = generate_random_request_and_context(text,
+                                                               match="text")
+
+        node = text_helpers.HighlightedSearchTermNode("text")
+        result = node.render(context)
+        expected = 'This is Some <span class="search_term">TeXT</span>'
         self.assertEqual(expected, result)
