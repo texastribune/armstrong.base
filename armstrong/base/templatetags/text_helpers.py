@@ -24,6 +24,9 @@ class HighlightedSearchTermNode(template.Node):
             return text
         q = query['q'][0]
 
+        if re.match(r"[^a-z0-9 _-]", q):
+            return text
+
         replacement = r'<span class="search_term">\1</span>'
         return re.sub(r'(?i)(%s)' % q, replacement, text)
 
