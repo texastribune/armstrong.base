@@ -12,7 +12,8 @@ class HighlightedSearchTermNode(template.Node):
     def render(self, context):
         text = self.text.resolve(context)
 
-        # TODO: handle no request variable in context
+        if not "request" in context:
+            return text
         request = context['request']
 
         if not 'HTTP_REFERER' in request.META:

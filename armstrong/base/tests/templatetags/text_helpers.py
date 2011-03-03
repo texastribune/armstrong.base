@@ -22,6 +22,12 @@ def generate_random_request_and_context(text, match="some"):
 
 
 class HelloWorld(TestCase):
+    def test_gracefully_returns_when_lacking_request_object(self):
+        text = "This is some text"
+        node = text_helpers.HighlightedSearchTermNode("text")
+        result = node.render({"text": text})
+        self.assertEqual(text, result)
+
     def test_replaces_words_with_highlighted_word(self):
         text = "This is some text"
         request, context = generate_random_request_and_context(text)
