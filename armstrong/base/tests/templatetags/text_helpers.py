@@ -7,15 +7,17 @@ from .._utils import TestCase
 from ...templatetags import text_helpers
 
 
-def generate_random_request(match="some"):
+def generate_random_request(match="some",
+                            url_template="http://localhost/?q=%s"):
     request = fudge.Fake()
-    request.has_attr(META={"HTTP_REFERER": "http://localhost/?q=%s" % match})
+    request.has_attr(META={"HTTP_REFERER": url_template % match})
     fudge.clear_calls()
     return request
 
 
-def generate_random_request_and_context(text, match="some"):
-    request = generate_random_request(match=match)
+def generate_random_request_and_context(text, match="some",
+                            url_template="http://localhost/?q=%s"):
+    request = generate_random_request(match=match, url_template=url_template)
     context = {
         "request": request,
         "text": text,
@@ -39,6 +41,14 @@ class HelloWorld(TestCase):
 
         with fudge.patched_context(text_helpers, 'settings', settings):
             self.assertRaises(ImproperlyConfigured, node.render, {"text": text})
+
+    def test_works_with_referrers_with_no_q_get_param(self):
+        text = "This is some text"
+        request, context = generate_random_request_and_context(
+                "", url_template="http://localhost/%s", match="")
+        node = text_helpers.HighlightedSearchTermNode("text")
+        result = node.render({"text": text})
+        self.assertEqual(text, result)
 
     def test_replaces_words_with_highlighted_word(self):
         text = "This is some text"
