@@ -2,9 +2,14 @@ import re
 import urlparse
 
 from django.conf import settings
+from django.template.defaultfilters import mark_safe
+from django.template.defaultfilters import stringfilter
 from django import template
 register = template.Library()
 
+
+@register.filter
+@stringfilter
 def highlight_text(text, q):
     if re.match(r"[^a-z0-9 _-]", q):
         return text
