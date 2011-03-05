@@ -15,7 +15,7 @@ def highlight_text(text, q):
         return text
 
     replacement = r'<span class="search_term">\1</span>'
-    return re.sub(r'(?i)(%s)' % q, replacement, text)
+    return mark_safe(re.sub(r'(?i)(%s)' % q, replacement, text))
 
 
 class HighlightedSearchTermNode(template.Node):

@@ -2,6 +2,7 @@ import fudge
 import urllib
 
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.safestring import SafeData
 
 from .._utils import TestCase
 from ...templatetags import text_helpers
@@ -26,6 +27,14 @@ def generate_random_request_and_context(text, match="some",
 
 
 class HelloWorld(TestCase):
+    def test_data_returns_is_marked_as_safe(self):
+        text = "This is some text"
+        request, context = generate_random_request_and_context(text)
+
+        node = text_helpers.HighlightedSearchTermNode("text")
+        result = node.render(context)
+        self.assertIsInstance(result, SafeData)
+
     def test_gracefully_returns_when_lacking_request_object(self):
         text = "This is some text"
         node = text_helpers.HighlightedSearchTermNode("text")
