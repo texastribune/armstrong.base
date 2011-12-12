@@ -2,14 +2,15 @@ from setuptools import setup
 
 setup(
     name='armstrong.base',
-    version='0.1.1',
+    version='0.1.2',
     description='Base functionality that needs to be shared widely',
     author='Texas Tribune',
     author_email='tech@texastribune.org',
     url='http://github.com/texastribune/armstrong.base/',
     packages=[
-        'armstrong',
         'armstrong.base',
+        'armstrong.base.templatetags',
+        'armstrong.base.tests',
     ],
     namespace_packages=[
         "armstrong",
