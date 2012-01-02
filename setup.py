@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='armstrong.base',
-    version='0.1.2',
+    version='0.1.3',
     description='Base functionality that needs to be shared widely',
     author='Texas Tribune',
     author_email='tech@texastribune.org',
@@ -11,6 +11,7 @@ setup(
         'armstrong.base',
         'armstrong.base.templatetags',
         'armstrong.base.tests',
+        'armstrong.base.tests.templatetags',
     ],
     namespace_packages=[
         "armstrong",
